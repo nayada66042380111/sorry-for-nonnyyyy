@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ขอโทษแงววว ง้อๆๆๆ</title>
+  <style>
+    :root{--bg:#fff6f8;--card:#ffffff;--accent:#ff6b8a;--muted:#777}
+    *{box-sizing:border-box;font-family:Inter, 'Noto Sans Thai', sans-serif}
+    body{margin:0;background:linear-gradient(180deg,#fff 0%,var(--bg) 100%);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .wrap{max-width:520px;width:100%;background:var(--card);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.06);padding:22px}
+    h1{margin:0 0 6px;font-size:20px;color:#222}
+    p.lead{margin:0 0 16px;color:var(--muted)}
+    .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+    button.opt{padding:12px;border-radius:10px;border:2px solid rgba(0,0,0,0.04);background:transparent;font-weight:600;cursor:pointer;transition:all .18s;}
+    button.opt:hover{transform:translateY(-4px);box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .result{padding:14px;border-radius:12px;background:linear-gradient(90deg,rgba(255,107,138,0.06),rgba(255,216,226,0.06));min-height:90px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+    .result p{margin:8px 0 0;font-weight:700;color:var(--accent)}
+    .actions{display:flex;gap:8px;margin-top:12px}
+    .small{font-size:13px;color:var(--muted)}
+    .copy{padding:8px 12px;border-radius:10px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+    .mailto{padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:pointer}
+    footer{margin-top:12px;text-align:center;color:var(--muted);font-size:12px}
+    .heart{font-size:42px;transform:scale(1);transition:transform .25s}
+    .heart.pop{transform:scale(1.25)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>ขอโทษนนนี่ครับ💕</h1>
+    <div class="opts" role="list">
+      <button class="opt" data-msg="ขอโทษนะ รู้ว่าทำให้เธอไม่สบายใจ เค้าจริงใจอยากปรับนะ" role="listitem">มาง้อแมวนนท์</button>
+      <button class="opt" data-msg="ขอโทดดด~ สมองเค้าง่วงเลยตอบช้า ไม่ได้ตั้งใจเมินเลยนะ" role="listitem">เราขอโทษผิดไปแล้วครับ</button>
+      <button class="opt" data-msg="มาเลย มาให้กอดที เค้าจะไม่ปล่อยให้งอนนาน" role="listitem">ให้อภัยเราได้ไหมเหมียวๆ</button>
+      <button class="opt" data-msg="รู้ว่าเธอน้อยใจ เราจะพยายามใส่ใจกว่าเดิม จริง ๆ นะ" role="listitem">มากอดกันนนน</button>
+    </div>
+
+    <div class="result" id="result">
+      <div class="heart" id="heart">💗</div>
+          <div class="actions" id="actions" style="display:none">
+        <button class="copy" id="copyBtn">คัดลอกข้อความ</button>
+        <button class="mailto" id="mailBtn">เปิดอีเมล (ส่งให้ฉัน)</button>
+      </div>
+     <script>
+    const opts = document.querySelectorAll('button.opt');
+    const msgEl = document.getElementById('msg');
+    const actions = document.getElementById('actions');
+    const copyBtn = document.getElementById('copyBtn');
+    const mailBtn = document.getElementById('mailBtn');
+    const heart = document.getElementById('heart');
+    let current = '';
+
+    function popHeart(){
+      heart.classList.add('pop');
+      setTimeout(()=>heart.classList.remove('pop'),300);
+      // tiny beep
+      try{
+        const ctx = new (window.AudioContext||window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        o.type = 'sine'; o.frequency.value = 660; o.connect(ctx.destination); o.start();
+        setTimeout(()=>{o.stop();ctx.close()},90);
+      }catch(e){}
+    }
+
+    opts.forEach(b=>b.addEventListener('click',()=>{
+      current = b.dataset.msg;
+      msgEl.textContent = current;
+      actions.style.display = 'flex';
+      popHeart();
+    }));
+
+    copyBtn.addEventListener('click',async()=>{
+      if(!current) return;
+      try{ await navigator.clipboard.writeText(current); copyBtn.textContent='คัดลอกแล้ว!'; setTimeout(()=>copyBtn.textContent='คัดลอกข้อความ',1200);}catch(e){alert('ไม่สามารถคัดลอกอัตโนมัติ ให้คัดลอกด้วยมือแทน')}
+    });
+
+    mailBtn.addEventListener('click',()=>{
+      if(!current) return alert('ยังไม่ได้เลือกข้อความ');
+      // placeholder: change email address before using if desired
+      const to = prompt('กรอกอีเมลที่จะส่งถึง (ว่างไว้เพื่อใช้ mail app):','');
+      const subject = encodeURIComponent('ขอโทษนะ 🙂');
+      const body = encodeURIComponent(current + '\n\n- จากคนที่อยากง้อ');
+      let href = `mailto:${to}?subject=${subject}&body=${body}`;
+      window.location.href = href;
+    });
+  </script>
+</body>
+</html>
